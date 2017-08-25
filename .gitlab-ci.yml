@@ -4,6 +4,8 @@ stages:
   - test_python3_4
   - test_python3_3
   - test_python2_7
+  - publish
+
 
 test_python3_6:
   image: python:3.6-alpine
@@ -49,3 +51,14 @@ test_python2_7:
   script:
     - python setup.py install
     - python setup.py test
+
+publish:
+  image: python:3-alpine
+  stage: publish
+  before_script:
+    - pip install twine wheel
+  script:
+    - python setup.py sdist bdist_wheel --universal
+    - twine upload dist/*
+  only:
+    - master
