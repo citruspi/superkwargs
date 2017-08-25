@@ -10,7 +10,12 @@ class MissingRequiredKwargException(SuperkwargException):
     pass
 
 
-def kwarg(name, required=False, default=None, evaluate_default=False):
+class InvalidKwargValueException(SuperkwargException):
+    pass
+
+
+def kwarg(name, required=False, default=None, evaluate_default=False,
+          choices=None):
     def decorator(function):
         def superkwarg(*args, **kwargs):
             if required and name not in kwargs:
@@ -23,6 +28,15 @@ def kwarg(name, required=False, default=None, evaluate_default=False):
                     kwargs[name] = default(kwargs)
                 else:
                     kwargs[name] = default
+
+            if (choices is not None) and (kwargs[name] not in choices):
+                raise InvalidKwargValueException(
+                    'Keyword argument \'{arg}\' value \'{value}\' not in available choices {choices}'.format(
+                        arg=name,
+                        value=kwargs[name],
+                        choices=choices
+                    )
+                )
 
             return function(*args, **kwargs)
         return superkwarg
