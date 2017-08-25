@@ -1,0 +1,51 @@
+stages:
+  - test_python3_6
+  - test_python3_5
+  - test_python3_4
+  - test_python3_3
+  - test_python2_7
+
+test_python3_6:
+  image: python:3.6-alpine
+  stage: test_python3_6
+  before_script:
+    - pip install nose
+  script:
+    - python setup.py install
+    - python setup.py test
+
+test_python3_5:
+  image: python:3.5-alpine
+  stage: test_python3_5
+  before_script:
+    - pip install nose
+  script:
+    - python setup.py install
+    - python setup.py test
+
+test_python3_4:
+  image: python:3.4-alpine
+  stage: test_python3_4
+  before_script:
+    - pip install nose
+  script:
+    - python setup.py install
+    - python setup.py test
+
+test_python3_3:
+  image: python:3.3-alpine
+  stage: test_python3_3
+  before_script:
+    - pip install nose
+  script:
+    - python setup.py install
+    - python setup.py test
+
+test_python2_7:
+  image: python:2.7-alpine
+  stage: test_python2_7
+  before_script:
+    - pip install nose
+  script:
+    - python setup.py install
+    - python setup.py test
