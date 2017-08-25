@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
 from setuptools import setup, find_packages
 
 
@@ -9,5 +12,12 @@ setup(
     packages=find_packages(),    
     zip_safe=False,
     include_package_data=True,
-    platforms='any'    
+    platforms='any',
+    test_suite='nose.collector',
+    extras_require={
+        'dev': [
+            'nose',
+            'coverage'
+        ]
+    }
 )
