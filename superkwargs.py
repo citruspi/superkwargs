@@ -14,8 +14,12 @@ class InvalidKwargValueException(SuperkwargException):
     pass
 
 
+class KwargValueValidationException(SuperkwargException):
+    pass
+
+
 def kwarg(name, required=False, default=None, evaluate_default=False,
-          choices=None):
+          choices=None, validation_test=None):
     def decorator(function):
         def superkwarg(*args, **kwargs):
             if required and name not in kwargs:
@@ -35,6 +39,14 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
                         arg=name,
                         value=kwargs[name],
                         choices=choices
+                    )
+                )
+
+            if validation_test is not None and not validation_test(kwargs[name]):
+                raise KwargValueValidationException(
+                    'Keyword argument \'{arg}\' value \'{value}\' failed validation test'.format(
+                        arg=name,
+                        value=kwargs[name]
                     )
                 )
 
