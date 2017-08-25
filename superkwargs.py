@@ -10,7 +10,7 @@ class MissingRequiredKwargException(SuperkwargException):
     pass
 
 
-def kwarg(name, required=False, default=None):
+def kwarg(name, required=False, default=None, evaluate_default=False):
     def decorator(function):
         def superkwarg(*args, **kwargs):
             if required and name not in kwargs:
@@ -19,7 +19,10 @@ def kwarg(name, required=False, default=None):
                     arg=name, func=function.__name__))
 
             if name not in kwargs:
-               kwargs[name] = default
+                if evaluate_default:
+                    kwargs[name] = default(kwargs)
+                else:
+                    kwargs[name] = default
 
             return function(*args, **kwargs)
         return superkwarg
