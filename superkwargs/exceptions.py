@@ -20,3 +20,7 @@ class InvalidKwargValueException(SuperkwargException):
 
 class KwargValueValidationException(SuperkwargException):
     pass
+
+
+class WrongKwargValueTypeException(SuperkwargException):
+    pass    

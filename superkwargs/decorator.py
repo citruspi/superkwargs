@@ -9,7 +9,7 @@ except ImportError:
     from inject import inject_kwargs, restore_function
 
 def kwarg(name, required=False, default=None, evaluate_default=False,
-          choices=None, validation_test=None):
+          choices=None, validation_test=None, type_=None):
     def decorator(function):
         def superkwarg(*args, **kwargs):
             if len(args) > 0:
@@ -24,12 +24,19 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
                         arg=name, func=function.__name__))
 
             if name not in kwargs:
-                if evaluate_default:
-                    kwargs[name] = default(kwargs)
-                else:
-                    kwargs[name] = default
+                kwargs[name] = default(kwargs) if evaluate_default else default
 
-            if (choices is not None) and (kwargs[name] not in choices):
+            if type_ is not None and not isinstance(kwargs[name], type_):
+                raise exceptions.WrongKwargValueTypeException(
+                    'Keyword argument \'{arg}\' value \'{value}\' type \'{value_type}\' does not match expected type \'{expected_type}\''.format(
+                        arg=name,
+                        value=kwargs[name],
+                        value_type=type(kwargs[name]),
+                        expected_type=type_
+                    )
+                )
+
+            if choices is not None and kwargs[name] not in choices:
                 raise exceptions.InvalidKwargValueException(
                     'Keyword argument \'{arg}\' value \'{value}\' not in available choices {choices}'.format(
                         arg=name,
@@ -51,7 +58,7 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
     return decorator
 
 
-def superkwarg(inject=False):
+def superkwarg(inject=False):    
     def decorator(function):
         def configure(**kwargs):        
             if inject:
