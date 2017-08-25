@@ -3,8 +3,10 @@
 
 try:
     from superkwargs import exceptions
+    from superkwargs import inject_kwargs, restore_function
 except ImportError:
     import exceptions
+    from inject import inject_kwargs, restore_function
 
 def kwarg(name, required=False, default=None, evaluate_default=False,
           choices=None, validation_test=None):
@@ -44,19 +46,21 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
                     )
                 )
 
-            _blank = object()
-
-            state = {k:function.__globals__.get(k, _blank) for k in kwargs}
-            function.__globals__.update(kwargs)
-
-            try:
-                return function()
-            finally:
-                for k, v in state.items():
-                    if v == _blank:
-                        del function.__globals__[k]
-                    else:
-                        function.__globals__[k] = v
-
+            return function(**kwargs)
         return superkwarg
+    return decorator
+
+
+def superkwarg(inject=False):
+    def decorator(function):
+        def configure(**kwargs):        
+            if inject:
+                try:
+                    _blank, state = inject_kwargs(kwargs, function)
+                    return function()
+                finally:
+                    restore_function(function, _blank, state)
+
+            return function(**kwargs)
+        return configure
     return decorator
