@@ -50,6 +50,19 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
                     )
                 )
 
-            return function(*args, **kwargs)
+            BLANK = object()
+
+            state = {k:function.__globals__.get(k, BLANK) for k in kwargs}
+            function.__globals__.update(kwargs)
+
+            try:
+                return function()
+            finally:
+                for k, v in state.items():
+                    if v == BLANK:
+                        del function.__globals__[k]
+                    else:
+                        function.__globals__[k] = v
+
         return superkwarg
     return decorator
