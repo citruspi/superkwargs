@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-
 class SuperkwargException(Exception):
+    pass
+
+
+class PositionalArgsIncludedException(SuperkwargException):
     pass
 
 
@@ -22,10 +25,16 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
           choices=None, validation_test=None):
     def decorator(function):
         def superkwarg(*args, **kwargs):
+            if len(args) > 0:
+                raise PositionalArgsIncludedException(
+                    'Positional argument \'{arg}\' not allowed; kwargs are required'.format(
+                        arg=args[0]
+                    ))
+
             if required and name not in kwargs:
                 raise MissingRequiredKwargException(
                     'Keyword argument \'{arg}\' required to invoke \'{func}\''.format(
-                    arg=name, func=function.__name__))
+                        arg=name, func=function.__name__))
 
             if name not in kwargs:
                 if evaluate_default:
