@@ -12,12 +12,6 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
           choices=None, validation_test=None, type_=None):
     def decorator(function):
         def validate(*args, **kwargs):
-            if len(args) > 0:
-                raise exceptions.PositionalArgsIncludedException(
-                    'Positional argument \'{arg}\' not allowed; kwargs are required'.format(
-                        arg=args[0]
-                    ))
-
             if required and name not in kwargs:
                 raise exceptions.MissingRequiredKwargException(
                     'Keyword argument \'{arg}\' required to invoke \'{func}\''.format(
@@ -61,6 +55,12 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
 def superkwarg(inject=False):
     def decorator(function):
         def configure(*args, **kwargs):
+            if len(args) > 0:
+                raise exceptions.PositionalArgsIncludedException(
+                    'Positional argument \'{arg}\' not allowed; kwargs are required'.format(
+                        arg=args[0]
+                    ))
+
             if inject:
                 try:
                     _blank, state = inject_kwargs(kwargs, function)
