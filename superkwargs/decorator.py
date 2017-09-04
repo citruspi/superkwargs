@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+import inspect
 try:
     from superkwargs import exceptions
     from superkwargs import inject_kwargs, restore_function
@@ -58,7 +59,8 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
 def superkwarg(inject=False):
     def decorator(function):
         def configure(*args, **kwargs):
-            if len(args) > 0:
+            func_args = inspect.getargspec(function).args
+            if len(args) > (1 if (len(func_args) > 0 and func_args[0] in ['self', 'cls'])  else 0):
                 raise exceptions.PositionalArgsIncludedException(
                     'Positional argument \'{arg}\' not allowed; kwargs are required'.format(
                         arg=args[0]
