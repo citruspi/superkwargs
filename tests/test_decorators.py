@@ -7,6 +7,7 @@ from nose.tools import raises
 
 def test_required_kwarg():
     @kwarg('name', required=True)
+    @superkwarg()
     def foobar(**kwargs):
         pass
 
@@ -16,6 +17,7 @@ def test_required_kwarg():
 @raises(exceptions.MissingRequiredKwargException)
 def test_missing_required_kwarg():
     @kwarg('name', required=True)
+    @superkwarg()
     def foobar(**kwargs):
         pass
 
@@ -25,6 +27,7 @@ def test_missing_required_kwarg():
 @raises(exceptions.PositionalArgsIncludedException)
 def test_positional_arguments_included():
     @kwarg('name')
+    @superkwarg()
     def foobar(**kwargs):
         pass
 
@@ -33,6 +36,7 @@ def test_positional_arguments_included():
 
 def test_valid_kwarg_value():
     @kwarg('name', choices=['bender', 'zoidberg'])
+    @superkwarg()
     def foobar(**kwargs):
         pass
 
@@ -40,8 +44,9 @@ def test_valid_kwarg_value():
 
 
 @raises(exceptions.InvalidKwargValueException)
-def test_invalid_kwarg_value():
+def test_invalid_kwarg_value():    
     @kwarg('name', choices=['bender', 'hermes'])
+    @superkwarg()
     def foobar(**kwargs):
         pass
 
@@ -50,6 +55,7 @@ def test_invalid_kwarg_value():
 
 def test_kwarg_value_validation_success():
     @kwarg('name', validation_test=lambda name: name=='zoidberg')
+    @superkwarg()
     def foobar(**kwargs):
         pass
 
@@ -59,6 +65,7 @@ def test_kwarg_value_validation_success():
 @raises(exceptions.KwargValueValidationException)
 def test_kwarg_value_validation_failure():
     @kwarg('name', validation_test=lambda name: name=='robot devil')
+    @superkwarg()
     def foobar(**kwargs):
         pass
 
@@ -67,6 +74,7 @@ def test_kwarg_value_validation_failure():
 
 def test_kwarg_value_type():
     @kwarg('name', type_=str)
+    @superkwarg()
     def foobar(**kwargs):
         pass
 
@@ -76,6 +84,7 @@ def test_kwarg_value_type():
 @raises(exceptions.WrongKwargValueTypeException)
 def test_wrong_kwarg_value_type():
     @kwarg('name', type_=str)
+    @superkwarg()
     def foobar(**kwargs):
         pass
 
@@ -94,6 +103,7 @@ def test_inject_kwargs():
 @raises(NameError)
 def test_dont_inject_kwargs():
     @kwarg('name')
+    @superkwarg()
     def foobar(**kwargs):
         return name
 
