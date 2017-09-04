@@ -108,3 +108,26 @@ def test_dont_inject_kwargs():
         return name
 
     foobar(name='zoidberg')
+
+
+def test_kwargs_on_method():
+    class Foobar(object):
+        name = None
+
+        @kwarg('name', required=True)
+        def __init__(self, **kwargs):
+            self.name = kwargs['name']
+
+    assert Foobar(name='zoidberg').name == 'zoidberg'
+
+
+def test_inject_kwargs_on_method():
+    class Foobar(object):
+        name = None
+
+        @kwarg('name', required=True)
+        @superkwarg(inject=True)  
+        def __init__(self, **kwargs):
+            self.name = name
+
+    assert Foobar(name='zoidberg').name == 'zoidberg'
