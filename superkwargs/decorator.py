@@ -20,7 +20,10 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
             if name not in kwargs:
                 kwargs[name] = default(kwargs) if evaluate_default else default
 
-            if type_ is not None and not isinstance(kwargs[name], type_):
+            if (type_ is not None) and \
+               (kwargs[name] is not None) and \
+               (not isinstance(kwargs[name], type_)):
+
                 raise exceptions.WrongKwargValueTypeException(
                     'Keyword argument \'{arg}\' value \'{value}\' type \'{value_type}\' does not match expected type \'{expected_type}\''.format(
                         arg=name,
