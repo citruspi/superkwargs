@@ -53,21 +53,21 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
                     )
                 )
 
-            return function(**kwargs)
+            return function(*args, **kwargs)
         return validate
     return decorator
 
 
 def superkwarg(inject=False):
     def decorator(function):
-        def configure(**kwargs):
+        def configure(*args, **kwargs):
             if inject:
                 try:
                     _blank, state = inject_kwargs(kwargs, function)
-                    return function()
+                    return function(*args)
                 finally:
                     restore_function(function, _blank, state)
 
-            return function(**kwargs)
+            return function(*args, **kwargs)
         return configure
     return decorator
