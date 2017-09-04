@@ -115,6 +115,7 @@ def test_kwargs_on_method():
         name = None
 
         @kwarg('name', required=True)
+        @superkwarg()
         def __init__(self, **kwargs):
             self.name = kwargs['name']
 
@@ -131,3 +132,29 @@ def test_inject_kwargs_on_method():
             self.name = name
 
     assert Foobar(name='zoidberg').name == 'zoidberg'
+
+
+def test_kwargs_on_class_method():
+    class Foobar(object):
+        multiplier = 2
+
+        @classmethod
+        @kwarg('x')
+        @superkwarg()
+        def multiply(cls, **kwargs):
+            return cls.multiplier * kwargs['x']
+
+    assert Foobar.multiply(x=5) == 10
+
+
+def test_kwargs_on_static_method():
+    class Foobar(object):
+        
+        @staticmethod
+        @kwarg('name')
+        @superkwarg()
+        def foo(**kwargs):
+            return kwargs['name']
+
+    assert Foobar.foo(name='zoidberg') == 'zoidberg'
+        
