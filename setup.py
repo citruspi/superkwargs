@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='superkwargs',
-    version='0.1.0',
+    version='0.2.0',
     author='Mihir Singh (@citruspi)',
     author_email='hello@mihirsingh.com',
     packages=find_packages(),    
