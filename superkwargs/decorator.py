@@ -11,7 +11,7 @@ except ImportError:
 def kwarg(name, required=False, default=None, evaluate_default=False,
           choices=None, validation_test=None, type_=None):
     def decorator(function):
-        def superkwarg(*args, **kwargs):
+        def validate(*args, **kwargs):
             if len(args) > 0:
                 raise exceptions.PositionalArgsIncludedException(
                     'Positional argument \'{arg}\' not allowed; kwargs are required'.format(
@@ -54,13 +54,13 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
                 )
 
             return function(**kwargs)
-        return superkwarg
+        return validate
     return decorator
 
 
-def superkwarg(inject=False):    
+def superkwarg(inject=False):
     def decorator(function):
-        def configure(**kwargs):        
+        def configure(**kwargs):
             if inject:
                 try:
                     _blank, state = inject_kwargs(kwargs, function)
