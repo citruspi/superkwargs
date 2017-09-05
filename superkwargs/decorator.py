@@ -9,7 +9,7 @@ except ImportError:
     import exceptions
     from inject import inject_kwargs, restore_function
 
-def kwarg(name, required=False, default=None, evaluate_default=False,
+def kwarg(name, required=False, default=None, invoke_default=True,
           choices=None, validation_test=None, type_=None):
     def decorator(function):
         def validate(*args, **kwargs):
@@ -19,7 +19,11 @@ def kwarg(name, required=False, default=None, evaluate_default=False,
                         arg=name, func=function.__name__))
 
             if name not in kwargs:
-                kwargs[name] = default(kwargs) if evaluate_default else default
+                default_val = default
+                if invoke_default and hasattr(default_val, '__call__'):
+                    default_val = default(kwargs)
+
+                kwargs[name] = default_val
 
             if (type_ is not None) and \
                (kwargs[name] is not None) and \
