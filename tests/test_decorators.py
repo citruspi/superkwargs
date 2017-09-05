@@ -99,7 +99,7 @@ def test_invalid_kwarg_value():
 
 
 def test_kwarg_value_validation_success():
-    @kwarg('name', validation_test=lambda name: name=='zoidberg')
+    @kwarg('name', validate=lambda name: name=='zoidberg')
     @superkwarg()
     def foobar(**kwargs):
         pass
@@ -109,7 +109,7 @@ def test_kwarg_value_validation_success():
 
 @raises(exceptions.KwargValueValidationException)
 def test_kwarg_value_validation_failure():
-    @kwarg('name', validation_test=lambda name: name=='robot devil')
+    @kwarg('name', validate=lambda name: name=='robot devil')
     @superkwarg()
     def foobar(**kwargs):
         pass

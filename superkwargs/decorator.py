@@ -10,9 +10,9 @@ except ImportError:
     from inject import inject_kwargs, restore_function
 
 def kwarg(name, required=False, default=None, invoke_default=True,
-          choices=None, validation_test=None, types=None):
+          choices=None, validate=None, types=None):
     def decorator(function):
-        def validate(*args, **kwargs):
+        def configure(*args, **kwargs):
             if required and name not in kwargs:
                 raise exceptions.MissingRequiredKwargException(
                     'Keyword argument \'{arg}\' required to invoke \'{func}\''.format(
@@ -47,7 +47,7 @@ def kwarg(name, required=False, default=None, invoke_default=True,
                     )
                 )
 
-            if validation_test is not None and not validation_test(kwargs[name]):
+            if validate is not None and not validate(kwargs[name]):
                 raise exceptions.KwargValueValidationException(
                     'Keyword argument \'{arg}\' value \'{value}\' failed validation test'.format(
                         arg=name,
@@ -56,7 +56,7 @@ def kwarg(name, required=False, default=None, invoke_default=True,
                 )
 
             return function(*args, **kwargs)
-        return validate
+        return configure
     return decorator
 
 
