@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-from superkwargs import superkwarg, kwarg, exceptions
+from superkwargs import superkwarg, kwarg, exceptions, typing
 from nose.tools import raises
 
 
@@ -128,7 +128,7 @@ def test_kwarg_value_validation_failure():
     foobar()
 
 def test_kwarg_value_type():
-    @kwarg('name', types=['str'])
+    @kwarg('name', types=typing.STRINGS)
     @superkwarg()
     def foobar(**kwargs):
         pass
@@ -138,7 +138,7 @@ def test_kwarg_value_type():
 
 @raises(exceptions.WrongKwargValueTypeException)
 def test_wrong_kwarg_value_type():
-    @kwarg('name', types=['str'])
+    @kwarg('name', types=typing.STRINGS)
     @superkwarg()
     def foobar(**kwargs):
         pass
