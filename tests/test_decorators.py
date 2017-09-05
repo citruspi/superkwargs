@@ -24,6 +24,51 @@ def test_missing_required_kwarg():
     foobar()
 
 
+def test_default_kwarg():
+    @kwarg('name', default='zoidberg')
+    @superkwarg()
+    def foobar(**kwargs):
+        return kwargs['name']
+
+    assert foobar() == 'zoidberg'
+
+
+def test_lambda_default_kwarg():
+    @kwarg('name', default='zoidberg')
+    @kwarg('message', default=lambda kw: 'hello {}'.format(kw['name']))
+    @superkwarg()
+    def foobar(**kwargs):
+        return kwargs['message']
+
+    assert foobar() == 'hello zoidberg'    
+
+
+def test_function_default_kwarg():
+    def hello_world(kw):
+        return 'hello {}'.format(kw['name'])
+
+    @kwarg('name', default='zoidberg')
+    @kwarg('message', default=hello_world)
+    @superkwarg()
+    def foobar(**kwargs):
+        return kwargs['message']
+
+    assert foobar() == 'hello zoidberg'     
+
+
+def test_callable_default_kwarg_no_invoke():
+    def hello_world(kw):
+        return 'hello {}'.format(kw['name'])
+
+    @kwarg('name', default='zoidberg')
+    @kwarg('message', default=hello_world, invoke_default=False)
+    @superkwarg()
+    def foobar(**kwargs):
+        return kwargs['message']
+
+    assert foobar() == hello_world           
+
+
 @raises(exceptions.PositionalArgsIncludedException)
 def test_positional_arguments_included():
     @kwarg('name')
