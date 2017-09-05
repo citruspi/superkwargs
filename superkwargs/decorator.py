@@ -10,7 +10,7 @@ except ImportError:
     from inject import inject_kwargs, restore_function
 
 def kwarg(name, required=False, default=None, invoke_default=True,
-          choices=None, validation_test=None, type_=None):
+          choices=None, validation_test=None, types=None):
     def decorator(function):
         def validate(*args, **kwargs):
             if required and name not in kwargs:
@@ -25,16 +25,16 @@ def kwarg(name, required=False, default=None, invoke_default=True,
 
                 kwargs[name] = default_val
 
-            if (type_ is not None) and \
+            if (types is not None) and \
                (kwargs[name] is not None) and \
-               (not isinstance(kwargs[name], type_)):
+               (type(kwargs[name]).__name__ not in types):
 
                 raise exceptions.WrongKwargValueTypeException(
-                    'Keyword argument \'{arg}\' value \'{value}\' type \'{value_type}\' does not match expected type \'{expected_type}\''.format(
+                    'Keyword argument \'{arg}\' value \'{value}\' type \'{value_type}\' does not in expected types \'{expected_types}\''.format(
                         arg=name,
                         value=kwargs[name],
-                        value_type=type(kwargs[name]),
-                        expected_type=type_
+                        value_type=type(kwargs[name]).__name__,
+                        expected_types=types
                     )
                 )
 

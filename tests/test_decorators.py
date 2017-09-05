@@ -117,8 +117,18 @@ def test_kwarg_value_validation_failure():
     foobar(name='zoidberg')
 
 
+    def foobar(name=None):
+        if name is None:
+            name == 'zoidberg'
+
+    @kwarg('name', default='zoidberg')
+    def foobar(**kwargs):
+        pass
+
+    foobar()
+
 def test_kwarg_value_type():
-    @kwarg('name', type_=str)
+    @kwarg('name', types=['str'])
     @superkwarg()
     def foobar(**kwargs):
         pass
@@ -128,7 +138,7 @@ def test_kwarg_value_type():
 
 @raises(exceptions.WrongKwargValueTypeException)
 def test_wrong_kwarg_value_type():
-    @kwarg('name', type_=str)
+    @kwarg('name', types=['str'])
     @superkwarg()
     def foobar(**kwargs):
         pass
